@@ -4,10 +4,10 @@ const games=[
 {id:'picture',title:'그림 기억하기',icon:'🖼️',desc:'그림을 잠깐 보고 기억해요!'},
 {id:'word',title:'단어 기억하기',icon:'📘',desc:'단어를 보고 가린 뒤 떠올려요!'},
 {id:'order',title:'순서 기억하기',icon:'🔢',desc:'순서를 그대로 기억해요!'},
-{id:'position',title:'위치 기억하기',icon:'📍',desc:'어디에 있었는지 기억해요!'},
+{id:'memory',title:'메모리 짝 맞추기',icon:'🃏',desc:'카드를 뒤집어 같은 그림 짝을 찾아요!'},
 {id:'number',title:'숫자 기억하기',icon:'7️⃣',desc:'숫자를 보고 기억해요!'}
 ];
-const picturePool=['🍎','🐶','🚲','🌙','🎈','🍓','🐰','🚗','⭐','🍕','🌳','🐱'];
+const picturePool=['🍎','🐶','🚲','🌙','🎈','🍓','🐰','🚗','⭐','🍕','🌳','🐱','🦊','🍉','🌈','🐼'];
 const wordPool=['바다','우산','기차','피자','토끼','별','사과','자동차','고양이','모자','책','구름'];
 let state=loadState();
 let activePlayer=state.activePlayer||'heeyoon';
@@ -63,7 +63,7 @@ function startGame(id){
     else{clearInterval(timer);launchGame(id,s)}
   },650);
 }
-function launchGame(id,s){if(id==='picture')pictureGame(s);else if(id==='word')wordGame(s);else if(id==='order')orderGame(s);else if(id==='position')positionGame(s);else numberGame(s)}
+function launchGame(id,s){if(id==='picture')pictureGame(s);else if(id==='word')wordGame(s);else if(id==='order')orderGame(s);else if(id==='memory')memoryGame(s);else numberGame(s)}
 function revealThenAsk(s,title,items,delay,askFn,isWord=false){
   s.innerHTML=`<div class="game-panel"><span class="game-kicker">기억하는 시간</span><h3>${title}</h3><p>눈으로 보고 머릿속에 꼭 담아보세요!</p><div class="memory-items">${items.map(x=>`<div class="memory-item ${isWord?'word':''}">${x}</div>`).join('')}</div><p class="subtle">곧 가려져요 👀</p></div>`;
   setTimeout(()=>askFn(),delay)
@@ -95,13 +95,30 @@ function orderGame(s){
     s.querySelector('#submitAnswer').onclick=()=>{let correct=0;selected.forEach((x,i)=>{if(x===currentAnswer[i])correct++});finish(correct*20,correct===5)}
   })
 }
-function positionGame(s){
-  const target=Math.floor(Math.random()*9);currentAnswer=[target];
-  s.innerHTML=`<div class="game-panel"><span class="game-kicker">위치 기억하기</span><h3>⭐의 위치를 기억하세요!</h3><div class="position-grid">${Array.from({length:9},(_,i)=>`<div class="position-cell">${i===target?'⭐':''}</div>`).join('')}</div><p class="subtle">곧 별이 사라져요!</p></div>`;
-  setTimeout(()=>{
-    s.innerHTML=`<div class="game-panel"><span class="game-kicker">위치 고르기</span><h3>별은 어디에 있었을까요?</h3><div class="position-grid">${Array.from({length:9},(_,i)=>`<button class="position-cell" data-i="${i}"></button>`).join('')}</div></div>`;
-    s.querySelectorAll('button').forEach(b=>b.onclick=()=>finish(Number(b.dataset.i)===target?100:0,Number(b.dataset.i)===target))
-  },2600)
+function memoryGame(s){
+  const pairIcons=sample(picturePool,8);
+  const deck=shuffle([...pairIcons,...pairIcons]).map((icon,i)=>({id:i,icon,matched:false}));
+  let first=null,second=null,locked=false,matches=0,moves=0;
+  s.innerHTML=`<div class="game-panel memory-panel"><span class="game-kicker">🃏 메모리 짝 맞추기</span><h3>같은 그림 두 장을 찾아보세요!</h3><div class="memory-status"><span>찾은 짝 <strong id="matchCount">0 / 8</strong></span><span>시도 <strong id="moveCount">0회</strong></span></div><div class="match-grid" id="matchGrid"></div><p class="subtle">카드 두 장을 차례로 눌러보세요. 틀리면 다시 뒤집혀요!</p></div>`;
+  const grid=document.getElementById('matchGrid');
+  const renderCard=(card)=>{
+    const b=document.createElement('button');b.className='match-card';b.dataset.id=card.id;b.setAttribute('aria-label','뒤집힌 메모리 카드');
+    b.innerHTML=`<span class="card-inner"><span class="card-back">?</span><span class="card-front">${card.icon}</span></span>`;
+    b.onclick=()=>flip(card,b);grid.appendChild(b)
+  };
+  deck.forEach(renderCard);
+  function flip(card,button){
+    if(locked||card.matched||button.classList.contains('flipped')||second)return;
+    button.classList.add('flipped');
+    if(!first){first={card,button};return;}
+    second={card,button};moves++;document.getElementById('moveCount').textContent=moves+'회';locked=true;
+    if(first.card.icon===second.card.icon){
+      first.card.matched=true;second.card.matched=true;first.button.classList.add('matched');second.button.classList.add('matched');matches++;document.getElementById('matchCount').textContent=matches+' / 8';
+      setTimeout(()=>{first=null;second=null;locked=false;if(matches===8){const score=Math.max(40,100-Math.max(0,moves-8)*4);finish(score,moves<=10)}},430);
+    }else{
+      setTimeout(()=>{first.button.classList.remove('flipped');second.button.classList.remove('flipped');first=null;second=null;locked=false},780);
+    }
+  }
 }
 function numberGame(s){
   const num=String(Math.floor(10000+Math.random()*90000));currentAnswer=[num];
