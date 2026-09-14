@@ -5,26 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>우리 가족 기억력 게임</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="memory.css" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
-      <div class="brand"><div class="brand-icon">🧠</div><div><h1>우리 가족 기억력 게임</h1><p>보고 · 생각하고 · 기억하고</p></div></div>
-      <nav><button class="nav-btn active">🏠 홈</button><button class="nav-btn" data-scroll="challenge">🎮 오늘의 챌린지</button><button class="nav-btn" data-scroll="records">📊 기록 보기</button><button class="nav-btn" data-scroll="ranking">🏆 가족 랭킹</button><button class="nav-btn" data-scroll="badges">🔖 배지 모음</button></nav>
-      <div class="side-note">“기억은 연습할수록<br />더 강해져요!” 🌱</div>
+      <div class="brand">
+        <div class="brand-icon">🧠</div>
+        <div><h1>우리 가족<br>기억력 게임</h1><p>보고 · 생각하고 · 기억하고</p></div>
+      </div>
+      <nav>
+        <button class="nav-btn active">🏠 <span>홈</span></button>
+        <button class="nav-btn" data-scroll="challenge">🎮 <span>오늘의 챌린지</span></button>
+        <button class="nav-btn" data-scroll="records">📊 <span>기록 보기</span></button>
+        <button class="nav-btn" data-scroll="ranking">🏆 <span>가족 랭킹</span></button>
+        <button class="nav-btn" data-scroll="badges">⭐ <span>배지 모음</span></button>
+      </nav>
+      <div class="side-mascot"><div class="rabbit">🐰</div><p>기억은 연습할수록<br>더 강해져요!<br><b>오늘도 화이팅! 💪</b></p></div>
     </aside>
+
     <main>
-      <section class="hero card"><div><span class="eyebrow">안녕하세요!</span><h2>오늘도 기억력에 도전해볼까요? 😊</h2><p>하루 5~10분, 우리 가족의 기억력을 게임처럼 키워봐요.</p></div><div class="quote">“오늘은 어제보다 더 잘할 수 있어!”<br /><strong>- 우리 가족 -</strong></div></section>
-      <section class="player-section card"><h3>누가 도전할까요?</h3><div class="players" id="players"></div></section>
-      <section id="challenge" class="challenge-section card"><div class="section-head"><div><h3>🎮 오늘의 기억력 챌린지</h3><p>5가지 게임 중 하나를 골라 도전해보세요.</p></div><button id="randomBtn" class="soft-btn">🔀 랜덤으로 시작하기</button></div><div class="game-grid" id="gameGrid"></div></section>
-      <section class="game-stage card" id="gameStage"><div class="stage-empty"><div class="big-icon">✨</div><h3>게임을 골라주세요!</h3><p>위의 카드에서 시작하기를 누르면 여기에 문제가 나와요.</p></div></section>
-      <section class="bottom-grid"><div id="ranking" class="card ranking-card"><div class="section-head compact"><h3>👑 가족 랭킹</h3><span id="todayLabel"></span></div><div id="rankingList"></div></div><div id="records" class="card records-card"><div class="section-head compact"><h3>📈 나의 기록</h3><span id="recordPlayer">희윤</span></div><div class="record-stats"><div><span>⭐ 오늘 점수</span><strong id="todayScore">0점</strong></div><div><span>↗ 최고 기록</span><strong id="bestScore">0점</strong></div><div><span>🔥 연속 도전</span><strong id="streak">0일</strong></div></div><div class="cheer" id="cheerText">오늘의 첫 도전을 시작해봐요! 💪</div></div></section>
-      <section id="badges" class="card badges-card"><div class="section-head compact"><h3>🏅 획득한 배지</h3><span>도전할수록 열려요!</span></div><div id="badgeList" class="badge-list"></div></section>
+      <section class="hero card">
+        <div class="hero-copy"><span class="eyebrow">안녕하세요!</span><h2>오늘도 기억력에 도전해볼까요? 😊</h2><p>하루 5~10분, 우리 가족의 기억력을 게임처럼 키워봐요!</p></div>
+        <div class="hero-hearts">♡ ♥ ♡</div>
+        <div class="quote">“작은 도전이<br>오늘을 더 특별하게 만들어줘!”<br><strong>- 우리 가족 - ❤️</strong></div>
+      </section>
+
+      <section class="top-grid">
+        <div class="player-section card">
+          <h3>누가 도전할까요?</h3>
+          <div class="players" id="players"></div>
+        </div>
+
+        <div id="challenge" class="challenge-section card">
+          <div class="section-head">
+            <div><h3>🎮 오늘의 기억력 챌린지</h3><p>5가지 게임 중 하나를 골라 도전해보세요!</p></div>
+            <button id="randomBtn" class="soft-btn">🔀 랜덤</button>
+          </div>
+          <div class="game-grid" id="gameGrid"></div>
+        </div>
+      </section>
+
+      <section class="game-stage card" id="gameStage">
+        <div class="stage-empty">
+          <div class="big-icon">✨</div>
+          <h3>게임을 골라주세요!</h3>
+          <p>위의 카드에서 시작하기를 누르면 여기에 문제가 나와요.</p>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <div id="ranking" class="card ranking-card">
+          <div class="section-head compact"><h3>👑 가족 랭킹</h3><span id="todayLabel"></span></div>
+          <div id="rankingList"></div>
+        </div>
+        <div id="records" class="card records-card">
+          <div class="section-head compact"><h3>📈 나의 기록</h3><span id="recordPlayer">희윤</span></div>
+          <div class="record-stats">
+            <div><span>⭐ 오늘 점수</span><strong id="todayScore">0점</strong></div>
+            <div><span>↗ 최고 기록</span><strong id="bestScore">0점</strong></div>
+            <div><span>🔥 연속 도전</span><strong id="streak">0일</strong></div>
+          </div>
+          <div class="cheer" id="cheerText">오늘의 첫 도전을 시작해봐요! 💪</div>
+        </div>
+      </section>
+
+      <section id="badges" class="card badges-card">
+        <div class="section-head compact"><h3>🏅 획득한 배지</h3><span>도전할수록 열려요!</span></div>
+        <div id="badgeList" class="badge-list"></div>
+      </section>
     </main>
   </div>
   <div id="toast" class="toast"></div>
   <script src="app.js"></script>
-  <script src="taepyeong-mode.js"></script>
 </body>
 </html>
